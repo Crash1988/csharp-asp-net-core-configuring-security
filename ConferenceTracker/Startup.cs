@@ -32,10 +32,6 @@ namespace ConferenceTracker
             services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("ConferenceTracker"));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
-            services.AddRazorPages();
-            services.AddTransient<IPresentationRepository, PresentationRepository>();
-            services.AddTransient<ISpeakerRepository, SpeakerRepository>();
             services.AddCors(options =>
             {
                 options.AddPolicy(_allowedOrigins,
@@ -44,16 +40,17 @@ namespace ConferenceTracker
                         builder.WithOrigins("http://pluralsight.com");
                     });
             });
-
-            SecretMessage = Configuration["ConfigureServices"];
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.AddTransient<IPresentationRepository, PresentationRepository>();
+            services.AddTransient<ISpeakerRepository, SpeakerRepository>();
+            SecretMessage = Configuration["ConfigureServices"];
         }
-
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
